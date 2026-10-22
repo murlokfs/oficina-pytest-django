@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+from library.permissions import is_librarian
+
 
 class UserSerializer(serializers.ModelSerializer):
     is_librarian = serializers.SerializerMethodField()
@@ -13,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "is_librarian"]
 
     def get_is_librarian(self, user):
-        return user.is_superuser or user.groups.filter(name="Librarian").exists()
+        return is_librarian(user)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
