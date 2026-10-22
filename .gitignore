@@ -10,6 +10,13 @@ env/
 # Banco local
 db.sqlite3
 
+# Testes e cobertura
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
 # Editores / SO
 .vscode/
 .idea/
