@@ -117,16 +117,84 @@ Todas as rotas exigem autenticação, exceto cadastro e login.
 O prazo do empréstimo é de 14 dias. As constantes ficam no topo de
 `library/models.py`.
 
-## O que falta
+## Rodando os testes
 
-Este é o ponto de partida: o projeto **não tem nenhum teste**. Durante a
-oficina vamos:
+Com o ambiente virtual ativado e as dependências instaladas
+(`pip install -r requirements.txt`):
 
-1. Instalar o Pytest e o pytest-django (e também pytest-cov e Model Bakery).
-2. Configurar o `pytest.ini`.
-3. Escrever os testes: validação sem banco, model e regras com banco,
-   permissões e as rotas da API.
-4. Medir a cobertura de testes.
-5. Criar o workflow do GitHub Actions que roda os testes em cada Pull Request.
+```bash
+# Roda todos os testes, mostrando o nome de cada um
+pytest -v
 
-O resultado final está na branch `final`.
+# Roda só um arquivo, ou só os testes cujo nome contém uma palavra
+pytest library/tests/test_models.py
+pytest -k emprestimo
+
+# Mede a cobertura e falha se ela ficar abaixo de 80%
+pytest --cov=authentication --cov=library --cov-report=term-missing --cov-fail-under=80
+```
+
+A coluna `Missing` do relatório de cobertura mostra as linhas que nenhum teste
+executou.
+
+Os testes usam um banco SQLite temporário, criado pelo pytest-django a partir
+das migrations, e não dependem do `seed_demo` nem da ordem em que rodam. As
+fixtures compartilhadas (clientes da API, usuários e livro) ficam no
+`conftest.py` da raiz.
+
+### Os tipos de teste da oficina
+
+| Arquivo | Tipo de teste | O que mostra |
+|---|---|---|
+| `library/tests/test_serializers.py` | unitário, **sem banco** | chamar `validate_title` direto, `pytest.raises` e `parametrize` |
+| `library/tests/test_models.py` | model, **com banco** | setup com Model Bakery (`make`, `_quantity`, `prepare`) |
+| `library/tests/test_serializers.py` | regra de negócio, **com banco** | `BorrowSerializer`: `is_valid()` e `errors` |
+| `library/tests/test_permissions.py` | permissão isolada | `APIRequestFactory`, permissão por papel e por objeto |
+| `library/tests/test_api.py` e `authentication/tests/test_api.py` | rotas da API | `APIClient`, `force_authenticate`, status 200/201/400/401/403 |
+
+### Model Bakery em 30 segundos
+
+```python
+baker.prepare(Book)                              # só na memória: não salva, nem precisa de banco
+baker.make(Book)                                 # salva, inventando os campos obrigatórios e os FKs
+baker.make(Book, title="Estudar Django")         # fixa só o que importa para o teste
+baker.make(Book, total_copies=2, _quantity=3)    # cria vários de uma vez
+```
+
+Em `library/tests/test_models.py`, a classe `TestExemplaresDisponiveis` tem um
+`setup` (fixture com `autouse=True`) que monta o cenário com o Bakery antes de
+cada teste: 1 autor, 3 livros e 2 membros criados com `_quantity`, e
+empréstimos no primeiro livro. Os testes só usam o que o setup criou.
+
+### Etapas da oficina no histórico
+
+Cada etapa da apresentação é um commit desta branch, então dá para
+acompanhar com `git log --oneline inicio..final` e `git checkout <commit>`:
+
+1. Configura pytest e pytest-django
+2. Testa validação sem banco
+3. Adiciona fixtures com Model Bakery
+4. Testa permissões
+5. Testa as rotas da API
+6. Adiciona workflow do GitHub Actions
+
+### GitHub Actions
+
+O workflow `.github/workflows/tests.yml` (**Django Tests**) roda a cada Pull
+Request: instala o Python 3.12 e as dependências, executa os testes e mede a
+cobertura. Se algum teste falhar ou a cobertura ficar abaixo de 80%, o check
+fica vermelho.
+
+O check vermelho, sozinho, só **avisa**: o botão de merge continua liberado.
+Para o PR ser **bloqueado de verdade**, configure a proteção da branch:
+
+1. No repositório, vá em **Settings → Branches → Add branch protection rule**
+   (ou **Settings → Rules → Rulesets**, na interface nova).
+2. Em *Branch name pattern*, coloque a branch que recebe os PRs (por exemplo
+   `inicio`).
+3. Marque **Require status checks to pass before merging** e procure o check
+   do workflow **Django Tests** (o job aparece como `tests`).
+4. Salve.
+
+O check só aparece na busca depois que o workflow rodou pelo menos uma vez,
+então abra um PR de teste antes de configurar.
