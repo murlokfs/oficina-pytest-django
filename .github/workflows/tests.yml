@@ -1,21 +1,20 @@
-name: Django Tests
+name: Django Tests # Define o nome exibido para este workflow.
 
-on:
-  pull_request:
+on: # Define os eventos que iniciam o workflow.
+  pull_request: # Executa o workflow quando uma pull request é criada ou atualizada.
 
-jobs:
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Run tests and coverage
-        run: |
-          pytest --cov=authentication --cov=library \
-            --cov-report=term-missing --cov-fail-under=80
+jobs: # Agrupa os trabalhos executados pelo workflow.
+  tests: # Identifica o trabalho responsável pelos testes.
+    runs-on: ubuntu-latest # Usa uma máquina virtual Linux do GitHub.
+    steps: # Lista as etapas executadas em sequência.
+      - uses: actions/checkout@v4 # Baixa o código do repositório.
+      - uses: actions/setup-python@v5 # Instala e configura o Python.
+        with: # Inicia as opções da ação de configuração.
+          python-version: "3.12" # Define a versão do Python utilizada.
+      - name: Install dependencies # Nomeia a etapa de instalação das dependências.
+        run: | # Inicia os comandos executados pelo shell.
+          python -m pip install --upgrade pip # Atualiza o gerenciador de pacotes pip.
+          pip install -r requirements.txt # Instala as dependências do projeto.
+      - name: Run tests and coverage # Nomeia a etapa de testes e cobertura.
+        run: | # Inicia os comandos de validação.
+          pytest --cov=authentication --cov=library --cov-report=term-missing --cov-fail-under=80 # Executa os testes, mostra linhas não cobertas e exige 80% de cobertura.
