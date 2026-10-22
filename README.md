@@ -119,11 +119,13 @@ O prazo do empréstimo é de 14 dias. As constantes ficam no topo de
 
 ## O que falta
 
-Este é o ponto de partida: o projeto **não tem nenhum teste**. Durante a
+Este é o ponto de partida: o projeto **não tem nenhum teste**. O `pytest.ini`
+e o `conftest.py` (fixtures compartilhadas) já estão prontos, mas as
+dependências de teste ainda não estão no `requirements.txt`. Durante a
 oficina vamos:
 
 1. Instalar o Pytest e o pytest-django (e também pytest-cov e Model Bakery).
-2. Configurar o `pytest.ini`.
+2. Entender o `pytest.ini` e as fixtures do `conftest.py`.
 3. Escrever os testes: validação sem banco, model e regras com banco,
    permissões e as rotas da API.
 4. Medir a cobertura de testes.
