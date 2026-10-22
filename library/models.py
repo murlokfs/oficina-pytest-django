@@ -4,7 +4,8 @@ from django.utils import timezone
 
 # Regras de negócio da biblioteca
 LOAN_DAYS = 14  # prazo do empréstimo, em dias
-MAX_ACTIVE_LOANS = 3  # empréstimos ativos por usuário
+# MAX_ACTIVE_LOANS = 3  # empréstimos ativos por usuário
+MAX_ACTIVE_LOANS = 4  # empréstimos ativos por usuário
 
 
 class Author(models.Model):
