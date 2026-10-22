@@ -18,3 +18,6 @@ jobs: # Agrupa os trabalhos executados pelo workflow.
       - name: Run tests and coverage # Nomeia a etapa de testes e cobertura.
         run: | # Inicia os comandos de validação.
           pytest --cov=authentication --cov=library --cov-report=term-missing --cov-fail-under=80 # Executa os testes, mostra linhas não cobertas e exige 80% de cobertura.
+
+
+#comentário de teste
