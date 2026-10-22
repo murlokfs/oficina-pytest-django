@@ -119,16 +119,15 @@ O prazo do empréstimo é de 14 dias. As constantes ficam no topo de
 
 ## O que falta
 
-Este é o ponto de partida: o projeto **não tem nenhum teste**. O `pytest.ini`
-e o `conftest.py` (fixtures compartilhadas) já estão prontos, mas as
-dependências de teste ainda não estão no `requirements.txt`. Durante a
-oficina vamos:
+Este é o ponto de partida: o projeto **não tem nenhum teste**. As
+dependências de teste (Pytest, pytest-django, pytest-cov e Model Bakery), o
+`pytest.ini` e o `conftest.py` (fixtures compartilhadas) já estão prontos.
+Durante a oficina vamos:
 
-1. Instalar o Pytest e o pytest-django (e também pytest-cov e Model Bakery).
-2. Entender o `pytest.ini` e as fixtures do `conftest.py`.
-3. Escrever os testes: validação sem banco, model e regras com banco,
+1. Entender o `pytest.ini` e as fixtures do `conftest.py`.
+2. Escrever os testes: validação sem banco, model e regras com banco,
    permissões e as rotas da API.
-4. Medir a cobertura de testes.
-5. Criar o workflow do GitHub Actions que roda os testes em cada Pull Request.
+3. Medir a cobertura de testes.
+4. Criar o workflow do GitHub Actions que roda os testes em cada Pull Request.
 
 O resultado final está na branch `final`.
